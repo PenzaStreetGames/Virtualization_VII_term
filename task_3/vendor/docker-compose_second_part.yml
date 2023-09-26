@@ -1,0 +1,29 @@
+version: "3"
+services:
+  first:
+    build: ./second_part
+    container_name: second_ful_cont
+    ports:
+      - "8012:8012"
+    depends_on:
+      - db
+    networks:
+      - my-network-2
+
+  db:
+    image: postgres:14.5
+    container_name: tvskp_db
+    environment:
+      POSTGRES_DB: ${postgres_db}
+      POSTGRES_USER: ${postgres_user}
+      POSTGRES_PASSWORD: ${postgres_password}
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    command: postgres -p ${DATABASE_PORT_INT}
+    ports:
+      - ${DATABASE_PORT_EXT}:${DATABASE_PORT_INT}
+    networks:
+      - my-network-2
+
+networks:
+  my-network-2:
